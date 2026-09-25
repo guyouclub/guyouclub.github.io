@@ -5,6 +5,8 @@
 // 不拦截请求、不做缓存（没有 fetch 监听），对网页的加载没有影响。
 
 const ICON = '/notify-icon.png';
+/** 网页关着时点的通知：记下要标为已读的，页面打开后来取（src/features/notify/web.ts） */
+const PENDING_READ = '/__gyc-notify/pending-read';
 
 self.addEventListener('install', () => {
   // 新版本装好就接管，不等开着的页面都关掉
@@ -63,9 +65,16 @@ async function open(data) {
     client.postMessage({ type: 'gyc-open', path, notification: data.notification });
     return;
   }
-  // 网页关了：重新打开到那个页面；通知列表里的那条带上 #read-ID，页面打开后把它标为已读
-  const hash = data.notification ? `#read-${data.notification.id}` : '';
-  await self.clients.openWindow(path + hash);
+  // 网页关了：重新打开到那个页面；通知列表里的那条先记下来，页面打开后把它标为已读
+  if (data.notification) await rememberRead(data.notification.id).catch(() => {});
+  await self.clients.openWindow(path);
+}
+
+async function rememberRead(id) {
+  const cache = await caches.open('gyc-notify');
+  const old = await cache.match(PENDING_READ);
+  const ids = old ? await old.json() : [];
+  await cache.put(PENDING_READ, new Response(JSON.stringify([...ids, id])));
 }
 
 /** 只打开咕游社自己的页面（反斜杠、// 开头之类会被当成别的网站） */

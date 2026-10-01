@@ -1,22 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--
+  网页版的 HTML 模板：有了这个文件，开发服务器和 expo export 都用它代替 Expo 自带的模板
+  （node_modules/expo/node_modules/@expo/cli/static/template/index.html，本文件照它改的）。
+  只为一件事改：不让浏览器翻译页面（决定 #174）。翻译会把文字节点换成 font 等元素，React 再更新文字时对不上，界面就乱了。
+  - lang 取 app.json 的 web.lang（zh-CN）。原来是默认的 en，中文用户的浏览器把页面当外文，就提示翻译。
+  - meta google notranslate：Chrome、Edge 不提示翻译。
+  - translate="no"、class="notranslate"：用户自己点翻译也不翻。Chrome、Safari 认 html 上的，Firefox 只认 body 上的，两处都写。
+-->
+<html lang="zh-CN" translate="no" class="notranslate">
   <head>
     <meta charset="utf-8" />
-    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>咕游社</title>
-    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <!-- react-native-web 推荐的样式重置：https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
-      /* These styles make the body full-height */
+      /* html、body 占满窗口 */
       html,
       body {
         height: 100%;
       }
-      /* These styles disable body scrolling if you are using <ScrollView> */
+      /* 页面本身不滚动，由 ScrollView 滚 */
       body {
         overflow: hidden;
       }
-      /* These styles make the root element full-height */
+      /* 根元素占满窗口 */
       #root {
         display: flex;
         height: 100%;
@@ -26,13 +34,9 @@
   <link rel="icon" href="/favicon.ico"/><link rel="preload" href="/_expo/static/css/global-01cd34db3f1aa28e7137a4ed3e79a318.css" as="style">
 <link rel="stylesheet" href="/_expo/static/css/global-01cd34db3f1aa28e7137a4ed3e79a318.css"></head>
 
-  <body>
-    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <!-- The root element for your Expo app. -->
+  <body translate="no" class="notranslate">
+    <noscript>需要开启 JavaScript 才能使用咕游社。</noscript>
     <div id="root"></div>
-  <script src="/_expo/static/js/web/entry-e3bdee265bd910d12cb6433a40baab69.js" defer></script>
+  <script src="/_expo/static/js/web/entry-371d3baeb0faa94b993cdb03a0250f15.js" defer></script>
 </body>
 </html>
